@@ -11,10 +11,11 @@ This repo is the source of truth for every Moodle page, template, build standard
 ```
 BearAcademy/
 ├── README.md                    ← You are here
-├── reference/                   ← Build standards, style guide, instructional design rules
+├── reference/                   ← Build standards, style guide, instructional design rules, audits
 │   ├── build-standard.md
 │   ├── style-guide.md
-│   └── instructional-design.md
+│   ├── instructional-design.md
+│   └── moodle-audit-2026-04-23.md
 ├── templates/                   ← Production-ready HTML templates for Moodle TinyMCE
 │   ├── README.md
 │   ├── moodle-page-base.html
