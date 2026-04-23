@@ -15,7 +15,8 @@ BearAcademy/
 │   ├── build-standard.md
 │   ├── style-guide.md
 │   ├── instructional-design.md
-│   └── moodle-audit-2026-04-23.md
+│   ├── moodle-audit-2026-04-23.md
+│   └── course-04-audit-2026-04-23.md
 ├── templates/                   ← Production-ready HTML templates for Moodle TinyMCE
 │   ├── README.md
 │   ├── moodle-page-base.html
