@@ -1,0 +1,109 @@
+{
+  "image": {
+    "path": "images/orgchart.png",
+    "mime": "image/png",
+    "copyright": {
+      "license": "U"
+    },
+    "width": 1600,
+    "height": 1100
+  },
+  "backgroundImageAltText": "Bear Team command structure: Bethanne 'Beth' Baer (Broker/Owner) on the left and Tom Songer (Team Lead) on the right, with Emergency Escalation and Open Door Policy badges at the bottom.",
+  "iconType": "icon",
+  "icon": "plus",
+  "color": "#1B365D",
+  "hotspots": [
+    {
+      "position": {
+        "x": 24.0,
+        "y": 33.0
+      },
+      "header": "Bethanne \"Beth\" Baer — Broker / Owner",
+      "content": [
+        {
+          "library": "H5P.AdvancedText 1.1",
+          "params": {
+            "text": "<p><strong>📞 407-228-1112</strong><br><strong>✉ Bethanne@bearteam.com</strong><br>🕐 Mon–Fri business hours; emergencies anytime</p><p><strong>CALL BETH FOR:</strong></p><ul><li>Contract or compliance questions — <em>before taking any action</em></li><li>Appraisal gaps or any deal at risk — <em>same day</em></li><li>Client complaints or threat of legal action — <em>IMMEDIATELY (do not respond to client first)</em></li><li>Cooperating-agent conflicts — <em>after a second failed attempt to resolve</em></li><li>Any situation that feels above your pay grade</li></ul><p><strong>NEVER WAIT TO BE INVITED.</strong> Beth would rather get a call at 9 PM than find out Monday morning that a deal collapsed over the weekend.</p>"
+          },
+          "subContentId": "54f323fd-70b8-467b-8c79-df18d0a6daa8",
+          "metadata": {
+            "contentType": "Text",
+            "license": "U",
+            "title": "Untitled Text",
+            "authors": [],
+            "changes": []
+          }
+        }
+      ]
+    },
+    {
+      "position": {
+        "x": 76.0,
+        "y": 33.0
+      },
+      "header": "Tom Songer — Team Lead",
+      "content": [
+        {
+          "library": "H5P.AdvancedText 1.1",
+          "params": {
+            "text": "<p><strong>📞 [TOM PHONE — fill in]</strong><br><strong>✉ [TOM EMAIL — fill in]</strong><br>🕐 Mon–Fri business hours</p><p><strong>CALL TOM FOR:</strong></p><ul><li>BearTeamOS™ technical issues — <em>within 24 hours</em></li><li>Training or Bear Academy questions — <em>within 24 hours</em></li><li>Marketing, branding, or listing-presentation questions — <em>within 24 hours</em></li><li>\"How do I do this?\" operational questions</li><li>Anything that's broken in the system</li></ul><p><strong>TOM HANDLES THE OPERATING SYSTEM.</strong> Beth handles escalations and risk. Tom handles how the work actually gets done day-to-day.</p>"
+          },
+          "subContentId": "63229068-1a4a-4ac5-9067-656d0d6e6bb4",
+          "metadata": {
+            "contentType": "Text",
+            "license": "U",
+            "title": "Untitled Text",
+            "authors": [],
+            "changes": []
+          }
+        }
+      ]
+    },
+    {
+      "position": {
+        "x": 24.0,
+        "y": 84.0
+      },
+      "header": "⚠ Emergency Escalation — When the Normal Path Doesn't Apply",
+      "content": [
+        {
+          "library": "H5P.AdvancedText 1.1",
+          "params": {
+            "text": "<p><strong>URGENT + OUTSIDE BUSINESS HOURS = CALL BETH DIRECTLY.</strong></p><p>Examples that justify a 9 PM call:</p><ul><li>A client is threatening legal action</li><li>A deal will expire or fall apart before morning</li><li>A safety concern (yours, a client's, or a property's)</li><li>Anything you can't fix and can't afford to wait on</li></ul><p><strong>DO NOT:</strong></p><ul><li>Email and hope she sees it</li><li>Try to handle it alone</li><li>Wait until Monday</li></ul><p>Beth's standing rule: she would rather take an inconvenient call than discover a preventable disaster on Monday morning. The brokerage runs on early escalation. Use it.</p>"
+          },
+          "subContentId": "b80d0a86-d5af-4c65-a567-e90a00133bab",
+          "metadata": {
+            "contentType": "Text",
+            "license": "U",
+            "title": "Untitled Text",
+            "authors": [],
+            "changes": []
+          }
+        }
+      ]
+    },
+    {
+      "position": {
+        "x": 76.0,
+        "y": 84.0
+      },
+      "header": "🚪 Open Door Policy — Reaching Out Is the Standard",
+      "content": [
+        {
+          "library": "H5P.AdvancedText 1.1",
+          "params": {
+            "text": "<p><strong>REACHING OUT IS NOT A SIGN OF WEAKNESS.</strong> It's how this brokerage operates.</p><p>The broker and team lead exist to support you. The cost of <em>not</em> calling is always higher than the cost of calling.</p><p><strong>THE BEAR TEAM RULE:</strong></p><ul><li>If you're 80% sure → call anyway and confirm</li><li>If you're guessing → call before acting</li><li>If you've already acted and it might be wrong → call faster</li></ul><p>Agents who use this resource produce more, get audited less, and stay longer. Agents who try to figure everything out alone are the ones who burn out and leave.</p>"
+          },
+          "subContentId": "bb488495-809a-4d10-a719-2a07fb859afb",
+          "metadata": {
+            "contentType": "Text",
+            "license": "U",
+            "title": "Untitled Text",
+            "authors": [],
+            "changes": []
+          }
+        }
+      ]
+    }
+  ]
+}
