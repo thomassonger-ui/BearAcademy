@@ -1,0 +1,27 @@
+{
+  "title": "Who to Contact — Image Hotspots",
+  "language": "en",
+  "mainLibrary": "H5P.ImageHotspots",
+  "embedTypes": [
+    "div"
+  ],
+  "license": "U",
+  "defaultLanguage": "en",
+  "preloadedDependencies": [
+    {
+      "machineName": "H5P.ImageHotspots",
+      "majorVersion": 1,
+      "minorVersion": 10
+    },
+    {
+      "machineName": "H5P.AdvancedText",
+      "majorVersion": 1,
+      "minorVersion": 1
+    },
+    {
+      "machineName": "FontAwesome",
+      "majorVersion": 4,
+      "minorVersion": 5
+    }
+  ]
+}
