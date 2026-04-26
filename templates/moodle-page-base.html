@@ -50,9 +50,21 @@
   </div>
 
   <!-- 9. NAVIGATION ROW -->
-  <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0;">
-    <a href="[PREVIOUS PAGE URL]" style="background: #ffffff; color: #1B365D; border: 2px solid #1B365D; padding: 10px 20px; text-decoration: none; font-weight: bold;">&laquo; Back</a>
-    <a href="[NEXT PAGE URL]" style="background: #000000; color: #ffffff; border: none; padding: 10px 20px; text-decoration: none; font-weight: bold;">Next &raquo;</a>
+  <!--
+    TWO-BUTTON RULE (see reference/build-standard.md):
+    - LEFT: PREVIOUS — navy #1B365D background, white text, label "← PREVIOUS"
+    - RIGHT: NEXT (or custom labeled button) — black #000000 background, white text, label "NEXT →"
+    - First page of a course/section: omit the LEFT button entirely and change
+      justify-content to flex-end so the single right-side button is right-aligned.
+    - When the next destination is a quiz/lab/cert/course transition, REPLACE
+      the generic "NEXT →" with a labeled custom button (e.g., "TAKE QUIZ →",
+      "START LAB →", "GET CERTIFICATE →", "GO TO COURSE 2 →").
+      Never add a custom button in addition to the generic NEXT — that creates
+      a duplicate-button bug.
+  -->
+  <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 24px;">
+    <a href="[PREVIOUS PAGE URL]" style="background: #1B365D; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-size: 16px; font-weight: bold; display: inline-block;">← PREVIOUS</a>
+    <a href="[NEXT PAGE URL]" style="background: #000000; color: #FFFFFF; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-size: 16px; font-weight: bold; display: inline-block;">NEXT →</a>
   </div>
 
 </div>
