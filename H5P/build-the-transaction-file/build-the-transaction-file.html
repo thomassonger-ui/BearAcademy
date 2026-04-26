@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Build the Transaction File — Bear Academy</title>
+<style>
+  :root {
+    --navy: #1B365D;
+    --black: #000000;
+    --white: #ffffff;
+    --light: #f7f9fc;
+    --gold: #D4AF37;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #6b7280;
+    --line: #d9d9d9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #222; line-height: 1.45; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
+  .header { background: var(--navy); color: var(--white); padding: 18px 22px; border-radius: 6px 6px 0 0; }
+  .header h1 { font-size: 22px; font-weight: 800; letter-spacing: 0.3px; }
+  .header p { font-size: 14px; opacity: 0.92; margin-top: 4px; }
+  .task { padding: 14px 22px; background: var(--light); border-left: 4px solid var(--navy); margin-bottom: 14px; font-size: 15px; }
+  .task strong { color: var(--navy); }
+
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; padding: 10px 0 14px; }
+  .btn { font-family: inherit; font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 6px; border: 0; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity .15s, transform .05s; }
+  .btn:active { transform: translateY(1px); }
+  .btn-check { background: var(--black); color: #fff; }
+  .btn-retry { background: var(--navy); color: #fff; }
+  .btn-solution { background: #fff; color: var(--navy); border: 2px solid var(--navy); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .score { margin-left: auto; font-weight: 700; color: var(--navy); font-size: 16px; }
+  .score .ok { color: var(--green); }
+  .score .bad { color: var(--red); }
+
+  /* The 4-zone workspace */
+  .workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px) { .workspace { grid-template-columns: 1fr; } }
+  .zone { background: var(--light); border: 2px solid var(--line); border-radius: 8px; min-height: 220px; display: flex; flex-direction: column; }
+  .zone-head { background: var(--navy); color: var(--white); padding: 10px 14px; border-radius: 6px 6px 0 0; }
+  .zone-head h3 { font-size: 14px; font-weight: 800; letter-spacing: 0.4px; }
+  .zone-head p { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .zone-body { flex: 1; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; min-height: 160px; }
+  .zone-body.hover { background: #eaf2ff; border-radius: 0 0 6px 6px; }
+  .zone-body.is-empty::before { content: 'DROP DOCUMENTS HERE'; color: #b6c0cc; font-size: 11px; font-weight: 800; letter-spacing: 1px; margin: auto; pointer-events: none; }
+
+  /* Document tray */
+  .tray { margin-top: 18px; padding: 14px; background: #fafbfd; border: 1px dashed #c4ccd6; border-radius: 8px; min-height: 90px; }
+  .tray-title { font-size: 13px; font-weight: 800; color: var(--gray); letter-spacing: 0.5px; margin-bottom: 10px; }
+  .tray-body { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* Documents (draggable) */
+  .doc {
+    background: #fff;
+    border: 2px solid var(--navy);
+    color: var(--navy);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    touch-action: none;
+    max-width: 100%;
+  }
+  .doc:active { cursor: grabbing; }
+  .doc.dragging { opacity: 0.4; }
+  .doc.checked-correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+  .doc.checked-wrong { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+  .doc .mark { display: inline-block; margin-right: 6px; font-weight: 900; }
+
+  /* Feedback panel */
+  .feedback { margin-top: 18px; padding: 16px 20px; border-radius: 8px; display: none; font-size: 15px; line-height: 1.5; }
+  .feedback.show { display: block; }
+  .feedback.tier-100 { background: var(--green-bg); color: var(--green); border-left: 4px solid var(--green); }
+  .feedback.tier-80  { background: #f1f8e9; color: #33691e; border-left: 4px solid #689f38; }
+  .feedback.tier-50  { background: #fff8e1; color: #b06500; border-left: 4px solid var(--gold); }
+  .feedback.tier-0   { background: var(--red-bg); color: var(--red); border-left: 4px solid var(--red); }
+
+  .footer { font-size: 11px; color: #888; text-align: center; padding: 14px 0 4px; letter-spacing: 0.4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>BEAR TEAM TRANSACTION FILE</h1>
+    <p>Where does each document go? Drag each item to the correct stage.</p>
+  </div>
+
+  <div class="task">
+    <strong>Build the Bear Team transaction file.</strong> Drag each document into the correct stage. Aim for 100% — misfiled paperwork is the #1 reason new agents lose commission. You can retry as many times as needed. Click <strong>Check My File</strong> when you're done.
+  </div>
+
+  <div class="workspace" id="workspace">
+    <div class="zone" data-zone="pre">
+      <div class="zone-head"><h3>STAGE 1 · PRE-LISTING</h3><p>Before the home goes on the market</p></div>
+      <div class="zone-body is-empty" data-zone-body="pre"></div>
+    </div>
+    <div class="zone" data-zone="active">
+      <div class="zone-head"><h3>STAGE 2 · ACTIVE LISTING</h3><p>On the market, accepting showings</p></div>
+      <div class="zone-body is-empty" data-zone-body="active"></div>
+    </div>
+    <div class="zone" data-zone="contract">
+      <div class="zone-head"><h3>STAGE 3 · UNDER CONTRACT</h3><p>Offer accepted, in escrow</p></div>
+      <div class="zone-body is-empty" data-zone-body="contract"></div>
+    </div>
+    <div class="zone" data-zone="closed">
+      <div class="zone-head"><h3>STAGE 4 · CLOSED</h3><p>Transaction complete, files archived</p></div>
+      <div class="zone-body is-empty" data-zone-body="closed"></div>
+    </div>
+  </div>
+
+  <div class="tray">
+    <div class="tray-title">DOCUMENTS — DRAG INTO THE CORRECT STAGE</div>
+    <div class="tray-body" id="tray" data-zone-body="tray"></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-check" id="btn-check">Check My File</button>
+    <button class="btn btn-retry" id="btn-retry" disabled>Try Again</button>
+    <button class="btn btn-solution" id="btn-solution" disabled>Show Me the Right Placement</button>
+    <div class="score" id="score"></div>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+
+  <div class="footer">Bear Academy · Drag-and-Drop Lab · Section 3 · Powered by WorldTeachPathways</div>
+</div>
+
+<script>
+(function(){
+  // The 18 documents and their correct zones
+  const DOCS = [
+    { id: 'doc1',  text: 'Listing Agreement',                          zone: 'pre' },
+    { id: 'doc2',  text: 'Seller&rsquo;s Property Disclosure',         zone: 'pre' },
+    { id: 'doc3',  text: 'Comparative Market Analysis (CMA)',          zone: 'pre' },
+    { id: 'doc4',  text: 'Listing Photos &amp; Media Authorization',   zone: 'pre' },
+
+    { id: 'doc5',  text: 'MLS Listing Sheet',                          zone: 'active' },
+    { id: 'doc6',  text: 'Showing Feedback Log',                       zone: 'active' },
+    { id: 'doc7',  text: 'Open House Sign-In Sheet',                   zone: 'active' },
+    { id: 'doc8',  text: 'Price Reduction Documentation',              zone: 'active' },
+
+    { id: 'doc9',  text: 'Signed Purchase Agreement',                  zone: 'contract' },
+    { id: 'doc10', text: 'Earnest Money Receipt',                      zone: 'contract' },
+    { id: 'doc11', text: 'Inspection Report',                          zone: 'contract' },
+    { id: 'doc12', text: 'Inspection Response / Repair Addendum',      zone: 'contract' },
+    { id: 'doc13', text: 'Appraisal Report',                           zone: 'contract' },
+    { id: 'doc14', text: 'Final Walkthrough Sign-Off',                 zone: 'contract' },
+
+    { id: 'doc15', text: 'Closing Disclosure (CD)',                    zone: 'closed' },
+    { id: 'doc16', text: 'Recorded Deed',                              zone: 'closed' },
+    { id: 'doc17', text: 'Commission Disbursement Authorization (CDA)',zone: 'closed' },
+    { id: 'doc18', text: 'Closed-File Archive Note',                   zone: 'closed' }
+  ];
+
+  // Shuffle so order isn't a hint
+  function shuffle(a){ for (let i=a.length-1; i>0; i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  const tray = document.getElementById('tray');
+  const allBodies = Array.from(document.querySelectorAll('[data-zone-body]'));
+  const btnCheck = document.getElementById('btn-check');
+  const btnRetry = document.getElementById('btn-retry');
+  const btnSolution = document.getElementById('btn-solution');
+  const scoreEl = document.getElementById('score');
+  const feedbackEl = document.getElementById('feedback');
+
+  // Render documents into the tray (shuffled)
+  function renderInitial(){
+    tray.innerHTML = '';
+    shuffle([...DOCS]).forEach(doc => {
+      const el = document.createElement('div');
+      el.className = 'doc';
+      el.draggable = true;
+      el.dataset.id = doc.id;
+      el.dataset.correct = doc.zone;
+      el.innerHTML = doc.text;
+      attachHandlers(el);
+      tray.appendChild(el);
+    });
+    updateZoneEmptyStates();
+    feedbackEl.className = 'feedback';
+    scoreEl.textContent = '';
+    btnCheck.disabled = false;
+    btnRetry.disabled = true;
+    btnSolution.disabled = true;
+  }
+
+  function attachHandlers(el){
+    // Native HTML5 drag (desktop)
+    el.addEventListener('dragstart', e => {
+      el.classList.add('dragging');
+      try { e.dataTransfer.setData('text/plain', el.dataset.id); e.dataTransfer.effectAllowed = 'move'; } catch(_){}
+    });
+    el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+    // Touch fallback (mobile)
+    let ghost = null, originRect = null, startX = 0, startY = 0, dx = 0, dy = 0;
+    el.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      originRect = el.getBoundingClientRect();
+      startX = t.clientX; startY = t.clientY; dx = 0; dy = 0;
+      ghost = el.cloneNode(true);
+      ghost.style.position = 'fixed';
+      ghost.style.left = originRect.left + 'px';
+      ghost.style.top = originRect.top + 'px';
+      ghost.style.width = originRect.width + 'px';
+      ghost.style.pointerEvents = 'none';
+      ghost.style.opacity = '0.95';
+      ghost.style.zIndex = '9999';
+      ghost.style.boxShadow = '0 6px 16px rgba(0,0,0,0.18)';
+      document.body.appendChild(ghost);
+      el.classList.add('dragging');
+      e.preventDefault();
+    }, { passive: false });
+    el.addEventListener('touchmove', e => {
+      if (!ghost) return;
+      const t = e.touches[0];
+      dx = t.clientX - startX; dy = t.clientY - startY;
+      ghost.style.transform = 'translate('+dx+'px,'+dy+'px)';
+      // highlight zone under finger
+      const target = document.elementFromPoint(t.clientX, t.clientY);
+      allBodies.forEach(b => b.classList.remove('hover'));
+      const body = target ? target.closest('[data-zone-body]') : null;
+      if (body) body.classList.add('hover');
+      e.preventDefault();
+    }, { passive: false });
+    el.addEventListener('touchend', e => {
+      if (!ghost) return;
+      const t = (e.changedTouches && e.changedTouches[0]) || null;
+      if (t){
+        const target = document.elementFromPoint(t.clientX, t.clientY);
+        const body = target ? target.closest('[data-zone-body]') : null;
+        if (body) body.appendChild(el);
+      }
+      ghost.remove(); ghost = null;
+      el.classList.remove('dragging');
+      allBodies.forEach(b => b.classList.remove('hover'));
+      updateZoneEmptyStates();
+    });
+  }
+
+  // Drop zones
+  allBodies.forEach(body => {
+    body.addEventListener('dragover', e => { e.preventDefault(); try { e.dataTransfer.dropEffect = 'move'; } catch(_){} body.classList.add('hover'); });
+    body.addEventListener('dragleave', () => body.classList.remove('hover'));
+    body.addEventListener('drop', e => {
+      e.preventDefault();
+      body.classList.remove('hover');
+      const id = e.dataTransfer.getData('text/plain');
+      const el = document.querySelector('.doc[data-id="'+CSS.escape(id)+'"]');
+      if (el) body.appendChild(el);
+      updateZoneEmptyStates();
+    });
+  });
+
+  function updateZoneEmptyStates(){
+    document.querySelectorAll('.zone-body').forEach(b => {
+      if (b.querySelectorAll('.doc').length === 0) b.classList.add('is-empty');
+      else b.classList.remove('is-empty');
+    });
+  }
+
+  // Check
+  btnCheck.addEventListener('click', () => {
+    const docs = Array.from(document.querySelectorAll('.doc'));
+    let correct = 0, placed = 0;
+    docs.forEach(el => {
+      const parent = el.parentElement;
+      const inTray = parent && parent.dataset.zoneBody === 'tray';
+      el.classList.remove('checked-correct', 'checked-wrong');
+      const markEl = el.querySelector('.mark'); if (markEl) markEl.remove();
+      if (inTray) return; // unscored if still in tray
+      placed++;
+      const placedZone = parent.dataset.zoneBody;
+      const expected = el.dataset.correct;
+      const ok = placedZone === expected;
+      if (ok) correct++;
+      el.classList.add(ok ? 'checked-correct' : 'checked-wrong');
+      const m = document.createElement('span'); m.className = 'mark'; m.textContent = ok ? '✓' : '✗';
+      el.insertBefore(m, el.firstChild);
+    });
+    const total = DOCS.length;
+    const pct = Math.round((correct / total) * 100);
+    scoreEl.innerHTML = 'Score: <span class="'+(pct>=80?'ok':'bad')+'">'+correct+' / '+total+'</span> &nbsp; ('+pct+'%)';
+    showFeedback(pct, placed, total);
+    btnRetry.disabled = false;
+    btnSolution.disabled = false;
+    btnCheck.disabled = true;
+  });
+
+  function showFeedback(pct, placed, total){
+    feedbackEl.classList.remove('tier-0','tier-50','tier-80','tier-100','show');
+    let msg;
+    if (placed < total) {
+      feedbackEl.classList.add('tier-0','show');
+      feedbackEl.innerHTML = '<strong>Hold up.</strong> '+(total-placed)+' document'+(total-placed===1?'':'s')+' still in the tray. Place every document, then check.';
+      return;
+    }
+    if (pct === 100) { feedbackEl.classList.add('tier-100'); msg = '<strong>✓ Perfect file.</strong> You can build a Bear Team transaction file. Misfiled paperwork won&rsquo;t be how you lose deals. Move on.'; }
+    else if (pct >= 80) { feedbackEl.classList.add('tier-80'); msg = '<strong>Strong.</strong> You&rsquo;d file most things in the right place on Day 1. Aim for 100% &mdash; every document matters. Click <em>Try Again</em> to fix the misplaced ones.'; }
+    else if (pct >= 50) { feedbackEl.classList.add('tier-50'); msg = '<strong>Closer.</strong> You have the structure right but several documents are in the wrong stage. The red ✗ items are the ones to re-place.'; }
+    else { feedbackEl.classList.add('tier-0'); msg = '<strong>Not yet.</strong> Misfiled paperwork is how new agents lose deals. Review the four stages and try again. Hint: the difference between Pre-Listing and Active Listing is whether the home is on the market yet.'; }
+    feedbackEl.classList.add('show');
+    feedbackEl.innerHTML = msg;
+  }
+
+  // Retry — return all docs to tray and clear marks
+  btnRetry.addEventListener('click', () => {
+    document.querySelectorAll('.doc').forEach(el => {
+      el.classList.remove('checked-correct','checked-wrong');
+      const m = el.querySelector('.mark'); if (m) m.remove();
+      tray.appendChild(el);
+    });
+    updateZoneEmptyStates();
+    feedbackEl.className = 'feedback';
+    scoreEl.textContent = '';
+    btnCheck.disabled = false;
+    btnRetry.disabled = true;
+    btnSolution.disabled = true;
+  });
+
+  // Show solution — auto-place every doc in its correct zone (with green marks)
+  btnSolution.addEventListener('click', () => {
+    document.querySelectorAll('.doc').forEach(el => {
+      const target = document.querySelector('[data-zone-body="'+el.dataset.correct+'"]');
+      target.appendChild(el);
+      el.classList.remove('checked-wrong');
+      el.classList.add('checked-correct');
+      let m = el.querySelector('.mark'); if (!m) { m = document.createElement('span'); m.className = 'mark'; el.insertBefore(m, el.firstChild); } m.textContent = '✓';
+    });
+    updateZoneEmptyStates();
+    scoreEl.innerHTML = 'Solution shown — <span class="ok">all 18 documents in the right place</span>';
+    feedbackEl.classList.remove('tier-0','tier-50','tier-80','tier-100');
+    feedbackEl.classList.add('tier-100','show');
+    feedbackEl.innerHTML = '<strong>Reference placement shown.</strong> Study where each document belongs, then click <em>Try Again</em> to test yourself.';
+    btnSolution.disabled = true;
+  });
+
+  renderInitial();
+})();
+</script>
+</body>
+</html>
