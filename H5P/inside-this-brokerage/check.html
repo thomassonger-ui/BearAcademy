@@ -44,11 +44,11 @@
     cursor: pointer;
     box-shadow: var(--shadow-soft);
     transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
-    opacity: 0;
-    transform: translateY(14px);
     overflow: hidden;
   }
-  .row.visible { animation: revealUp 0.55s cubic-bezier(.2,.7,.25,1) forwards; }
+  /* Hidden initial state only when JS marks the body ready (graceful fallback if JS fails) */
+  .js-ready .row { opacity: 0; transform: translateY(14px); }
+  .js-ready .row.visible { animation: revealUp 0.55s cubic-bezier(.2,.7,.25,1) forwards; }
 
   .row:hover {
     transform: translateY(-2px);
@@ -218,12 +218,13 @@
 (function(){
   const rows = document.querySelectorAll('[data-row]');
 
-  // Effect 1: stagger reveal on load (reliable inside iframes; CSS handles the per-row delay)
-  // Use rAF + small delay so the browser has time to paint the initial hidden state first.
+  // Effect 1: stagger reveal on load (reliable inside iframes; CSS handles per-row delay)
+  // Add js-ready class so rows hide ONLY when JS is running. If JS fails, rows stay visible.
+  document.body.classList.add('js-ready');
   requestAnimationFrame(() => {
     setTimeout(() => {
       rows.forEach(r => r.classList.add('visible'));
-    }, 60);
+    }, 80);
   });
 
   // Effect 3: click to expand (one open at a time)
