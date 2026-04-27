@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Autonomy Within Standards — Quick Check</title>
+<style>
+  :root {
+    --navy: #1B365D;
+    --black: #000000;
+    --light: #f7f9fc;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #6b7280;
+    --line: #d9d9d9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #222; line-height: 1.5; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+  .header { background: var(--navy); color: #fff; padding: 16px 20px; border-radius: 6px 6px 0 0; }
+  .header h1 { font-size: 17px; font-weight: 800; letter-spacing: 0.3px; }
+  .header p { font-size: 13px; opacity: 0.92; margin-top: 4px; }
+  .body { background: #fff; border: 1px solid var(--line); border-top: none; padding: 18px 20px; border-radius: 0 0 6px 6px; }
+
+  .qcount { font-size: 12px; font-weight: 700; color: var(--gray); letter-spacing: 1px; margin-bottom: 6px; }
+  .qstem { font-size: 16px; font-weight: 600; line-height: 1.55; margin-bottom: 16px; color: #1a1a1a; }
+
+  .choices { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .choice {
+    flex: 1; min-width: 140px;
+    padding: 14px 18px;
+    border: 2px solid var(--navy);
+    background: #fff;
+    color: var(--navy);
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .choice:hover:not(:disabled) { background: var(--navy); color: #fff; }
+  .choice:disabled { cursor: not-allowed; }
+  .choice.is-right { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+  .choice.is-wrong { background: var(--red-bg); color: var(--red); border-color: var(--red); }
+
+  .rationale {
+    display: none;
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .rationale.show { display: block; }
+  .rationale.right { background: var(--green-bg); color: #1b3d1f; border-left: 4px solid var(--green); }
+  .rationale.wrong { background: var(--red-bg); color: #4a1414; border-left: 4px solid var(--red); }
+  .rationale strong { font-weight: 800; }
+  .rationale em { font-style: italic; }
+  .rationale ul { margin: 8px 0 0 20px; }
+  .rationale li { margin-bottom: 4px; }
+
+  .nav { display: flex; gap: 10px; align-items: center; }
+  .btn { font-family: inherit; font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 6px; border: 0; cursor: pointer; background: var(--navy); color: #fff; }
+
+  .footer { font-size: 11px; color: #999; text-align: center; padding: 12px 0 4px; letter-spacing: 0.4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>QUICK CHECK · Autonomy Within Standards</h1>
+    <p>One question. True or False — and why.</p>
+  </div>
+
+  <div class="body">
+    <div class="qcount">QUESTION · TRUE OR FALSE</div>
+    <div class="qstem">As an independent contractor at Bear Team, you have full discretion over your transaction workflow, documentation standards, and broker visibility &mdash; those are part of the autonomy that comes with IC status.</div>
+
+    <div class="choices">
+      <button class="choice" id="btn-true" data-val="true">TRUE</button>
+      <button class="choice" id="btn-false" data-val="false">FALSE</button>
+    </div>
+
+    <div class="rationale" id="rationale"></div>
+
+    <div class="nav" id="nav" style="display:none;">
+      <button class="btn" id="btn-retry">Try Again</button>
+    </div>
+  </div>
+
+  <div class="footer">Bear Academy · Quick Check · Section 2 — Autonomy Within Standards</div>
+</div>
+
+<script>
+(function(){
+  const btnTrue = document.getElementById('btn-true');
+  const btnFalse = document.getElementById('btn-false');
+  const rationale = document.getElementById('rationale');
+  const navEl = document.getElementById('nav');
+  const btnRetry = document.getElementById('btn-retry');
+
+  const ANSWER = false;
+
+  const WHY_RIGHT = 'Correct. The page&rsquo;s table is explicit about the split:'
+    + '<ul>'
+    + '<li><strong>You control:</strong> schedule and prospecting, client relationships and lead sources, production volume and income goals, personal brand <em>within guidelines</em>.</li>'
+    + '<li><strong>The system controls:</strong> transaction workflow and milestones, documentation standards and file integrity, broker visibility and escalation protocols, communication standards and brand discipline.</li>'
+    + '</ul>'
+    + 'The page states it directly: <em>&ldquo;independence does not mean isolation.&rdquo;</em> Workflow, documentation, and broker visibility are non-negotiable. IC autonomy is real &mdash; just not in those three areas.';
+
+  const WHY_WRONG = 'Re-read the table. The three items in the question &mdash; <strong>transaction workflow, documentation standards, broker visibility</strong> &mdash; are explicitly listed under <em>&ldquo;The System Controls.&rdquo;</em> Independent contractor status gives you discretion over schedule, prospecting, relationships, income goals, and brand within guidelines. It does NOT give you discretion to opt out of the operational standards that protect commission, reputation, the client, and the brokerage.<br><br>'
+    + 'The page&rsquo;s closing line is the principle: <em>&ldquo;This is not restriction. It is alignment. When structure is followed, performance scales without friction.&rdquo;</em>';
+
+  function pick(val) {
+    if (btnTrue.disabled) return;
+    const correct = (val === ANSWER);
+    btnTrue.disabled = true; btnFalse.disabled = true;
+    const picked = val ? btnTrue : btnFalse;
+    if (correct) picked.classList.add('is-right');
+    else { picked.classList.add('is-wrong'); (ANSWER ? btnTrue : btnFalse).classList.add('is-right'); }
+
+    rationale.classList.add('show', correct ? 'right' : 'wrong');
+    const head = correct ? '✓ <strong>Correct.</strong> ' : '✗ <strong>Not quite.</strong> ';
+    rationale.innerHTML = head + (correct ? WHY_RIGHT.replace(/^Correct\.\s*/, '') : WHY_WRONG);
+    navEl.style.display = '';
+  }
+
+  btnTrue.addEventListener('click', () => pick(true));
+  btnFalse.addEventListener('click', () => pick(false));
+
+  btnRetry.addEventListener('click', () => {
+    [btnTrue, btnFalse].forEach(b => { b.disabled = false; b.classList.remove('is-right','is-wrong'); });
+    rationale.className = 'rationale';
+    rationale.innerHTML = '';
+    navEl.style.display = 'none';
+  });
+})();
+</script>
+</body>
+</html>
