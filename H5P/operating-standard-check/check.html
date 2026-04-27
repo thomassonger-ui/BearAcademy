@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Operating Inside the Standard — Hard Check</title>
+<style>
+  :root {
+    --navy: #1B365D;
+    --black: #000000;
+    --white: #ffffff;
+    --light: #f7f9fc;
+    --gold: #D4AF37;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #6b7280;
+    --line: #d9d9d9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #222; line-height: 1.5; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 16px; }
+  .header { background: var(--navy); color: var(--white); padding: 16px 20px; border-radius: 6px 6px 0 0; }
+  .header h1 { font-size: 18px; font-weight: 800; letter-spacing: 0.3px; }
+  .header p { font-size: 13px; opacity: 0.92; margin-top: 4px; }
+  .body { background: #fff; border: 1px solid var(--line); border-top: none; padding: 18px 20px; border-radius: 0 0 6px 6px; }
+
+  .qcount { font-size: 12px; font-weight: 700; color: var(--gray); letter-spacing: 1px; margin-bottom: 6px; }
+  .level { display: inline-block; background: #f4dada; color: #8a1a1a; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; margin-left: 6px; letter-spacing: 0.5px; }
+  .scenario { background: var(--light); border-left: 4px solid var(--navy); padding: 12px 14px; margin-bottom: 14px; font-size: 14px; line-height: 1.55; color: #444; }
+  .scenario em { color: #222; }
+  .qstem { font-size: 16px; font-weight: 600; line-height: 1.55; margin-bottom: 14px; color: #1a1a1a; }
+
+  .opts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .opt {
+    text-align: left;
+    padding: 14px 16px;
+    background: #fff;
+    border: 2px solid var(--navy);
+    color: #222;
+    font-size: 14px;
+    line-height: 1.5;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .opt:hover:not(:disabled) { background: #eef3fb; }
+  .opt .letter { display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 800; text-align: center; line-height: 24px; font-size: 13px; margin-right: 10px; vertical-align: middle; }
+  .opt:disabled { cursor: not-allowed; }
+  .opt.is-right { background: var(--green-bg); border-color: var(--green); color: #1b3d1f; }
+  .opt.is-right .letter { background: var(--green); }
+  .opt.is-wrong { background: var(--red-bg); border-color: var(--red); color: #4a1414; }
+  .opt.is-wrong .letter { background: var(--red); }
+  .opt.dimmed:not(.is-right) { opacity: 0.55; }
+
+  .rationale {
+    display: none;
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .rationale.show { display: block; }
+  .rationale.right { background: var(--green-bg); color: #1b3d1f; border-left: 4px solid var(--green); }
+  .rationale.wrong { background: var(--red-bg); color: #4a1414; border-left: 4px solid var(--red); }
+  .rationale strong { font-weight: 800; }
+  .rationale em { font-style: italic; }
+  .rationale ul { margin: 8px 0 0 22px; }
+  .rationale li { margin-bottom: 4px; }
+
+  .nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn { font-family: inherit; font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 6px; border: 0; cursor: pointer; }
+  .btn-secondary { background: var(--navy); color: #fff; }
+
+  .footer { font-size: 11px; color: #999; text-align: center; padding: 12px 0 4px; letter-spacing: 0.4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>HARD CHECK · Why the System Exists</h1>
+    <p>One scenario. Four answers from real sales coaches — only one matches the Bear Team thesis.</p>
+  </div>
+
+  <div class="body">
+
+    <div class="qcount">QUESTION <span class="level">HARD SCENARIO</span></div>
+
+    <div class="scenario">
+      A Bear Team agent comes to you frustrated. <em>"I'm working harder than anyone on the team. I'm running 80-hour weeks, I've memorized three closing scripts, I push every prospect to a decision on the first call. But I'm closing fewer deals than agents who clearly aren't grinding as hard. What am I missing?"</em><br><br>
+      Based on the Bear Team operating standard, what is the BEST diagnosis?
+    </div>
+
+    <div class="opts" id="opts">
+      <button class="opt" data-correct="false" data-rationale="A_WRONG">
+        <span class="letter">A</span>
+        "Your scripts aren't aggressive enough. The agents at the top use harder language &mdash; push through every objection, never let a prospect off the phone without a yes. Tighten your close."
+      </button>
+      <button class="opt" data-correct="false" data-rationale="B_WRONG">
+        <span class="letter">B</span>
+        "Sales is a numbers game. Add more cold-calls per day. Double your dials. The grind is what separates closers from everyone else."
+      </button>
+      <button class="opt" data-correct="true" data-rationale="C_RIGHT">
+        <span class="letter">C</span>
+        "When the system is followed correctly, hard-sell techniques aren't needed. The friction you're hitting on the close is almost always a system gap upstream &mdash; late lead capture, dirty pipeline, no broker visibility, off-brand materials, or weak escalation. Fix the system, not the script."
+      </button>
+      <button class="opt" data-correct="false" data-rationale="D_WRONG">
+        <span class="letter">D</span>
+        "Some people are natural closers and some aren't. Maybe focus on listing-side business where the seller comes to you and personality matters less."
+      </button>
+    </div>
+
+    <div class="rationale" id="rationale"></div>
+
+    <div class="nav" id="nav" style="display:none;">
+      <button class="btn btn-secondary" id="btn-retry">Try Again</button>
+    </div>
+
+  </div>
+
+  <div class="footer">Bear Academy · Hard Check · Section 3 — Operating Inside the Standard</div>
+</div>
+
+<script>
+(function(){
+  const RATIONALES = {
+    A_WRONG: 'Aggressive scripts are a symptom of trying to <em>make</em> the brokerage work, not letting the brokerage work for you. The page is direct: <strong>"When you do [follow the standard], the brokerage works for you &mdash; not the other way around."</strong> Pushing harder is what agents do when their upstream system is broken &mdash; they\'re trying to manually overcome friction the system should have removed. Hard-sell language also breaches brand discipline (<em>"Brand-consistent client materials"</em> is one of the things the standard gives you). The fix isn\'t louder closing &mdash; it\'s a cleaner system.',
+    B_WRONG: 'Volume without infrastructure produces churn, not closings. The page lists exactly what the standard <em>replaces</em>: scattered spreadsheets and sticky notes, working alone with no safety net, designing your own flyers at midnight. Doubling dials on top of those gaps just doubles the friction. The agents above this person on the leaderboard aren\'t grinding harder &mdash; they\'re running with a working system, so each touchpoint converts at a higher rate. The fix is <strong>system completeness</strong>, not call volume.',
+    C_RIGHT: 'Correct. This is the page\'s thesis stated plainly: <strong>"The standard is not a constraint. It is the infrastructure that lets you perform at a higher level than agents operating without one."</strong> When friction shows up at the close, it\'s rarely the close that\'s broken. It\'s upstream:'
+      + '<ul>'
+      + '<li><strong>Late lead capture</strong> &mdash; lead went cold before the call</li>'
+      + '<li><strong>Dirty pipeline</strong> &mdash; no record of prior touches, so the prospect re-explains and trust drops</li>'
+      + '<li><strong>No broker visibility</strong> &mdash; no safety net when a deal needs help</li>'
+      + '<li><strong>Off-brand materials</strong> &mdash; client doesn\'t take you seriously</li>'
+      + '<li><strong>Weak escalation</strong> &mdash; deal stalls because the agent tried to fix it alone</li>'
+      + '</ul>'
+      + 'Fix any one of those and the close stops being a fight. <em>"When you do [follow the standard], the brokerage works for you."</em>',
+    D_WRONG: 'The page rejects this premise outright. The standard is universal &mdash; it <em>"lets you perform at a higher level than agents operating without one,"</em> regardless of personality. There is no "natural closer" carve-out at Bear Team. Switching to listing-side won\'t fix it either; the same upstream system gaps (lead capture timing, broker visibility, brand discipline, escalation) determine listing conversion just as much as buyer-side conversion. The fix is the system, not the niche.'
+  };
+
+  const optsBox = document.getElementById('opts');
+  const rationale = document.getElementById('rationale');
+  const navEl = document.getElementById('nav');
+  const btnRetry = document.getElementById('btn-retry');
+
+  function reset(){
+    rationale.className = 'rationale';
+    rationale.innerHTML = '';
+    navEl.style.display = 'none';
+    Array.from(optsBox.children).forEach(b => {
+      b.disabled = false;
+      b.classList.remove('is-right','is-wrong','dimmed');
+    });
+  }
+
+  Array.from(optsBox.children).forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.disabled) return;
+      const correct = btn.dataset.correct === 'true';
+      const ratKey = btn.dataset.rationale;
+
+      Array.from(optsBox.children).forEach(b => {
+        b.disabled = true;
+        const isC = b.dataset.correct === 'true';
+        if (isC) b.classList.add('is-right');
+        else b.classList.add('dimmed');
+      });
+      if (!correct) btn.classList.add('is-wrong');
+
+      rationale.classList.add('show', correct ? 'right' : 'wrong');
+      const head = correct ? '✓ <strong>Best answer.</strong> ' : '✗ <strong>Not the best.</strong> ';
+      let body = RATIONALES[ratKey];
+      if (!correct) body += '<br><br><strong>The correct answer is C.</strong> ' + RATIONALES.C_RIGHT.replace(/^Correct\. /,'');
+      rationale.innerHTML = head + body;
+
+      navEl.style.display = '';
+    });
+  });
+
+  btnRetry.addEventListener('click', reset);
+})();
+</script>
+</body>
+</html>
