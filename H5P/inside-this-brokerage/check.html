@@ -46,9 +46,8 @@
     transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
     overflow: hidden;
   }
-  /* Hidden initial state only when JS marks the body ready (graceful fallback if JS fails) */
-  .js-ready .row { opacity: 0; transform: translateY(14px); }
-  .js-ready .row.visible { animation: revealUp 0.55s cubic-bezier(.2,.7,.25,1) forwards; }
+  /* Pure CSS reveal — fires on load, no JS required */
+  .row { animation: revealUp 0.55s cubic-bezier(.2,.7,.25,1) backwards; }
 
   .row:hover {
     transform: translateY(-2px);
@@ -109,11 +108,11 @@
   .deeper p strong { color: var(--navy); }
 
   /* Stagger reveal delays */
-  .row:nth-child(1).visible { animation-delay: 0.04s; }
-  .row:nth-child(2).visible { animation-delay: 0.10s; }
-  .row:nth-child(3).visible { animation-delay: 0.16s; }
-  .row:nth-child(4).visible { animation-delay: 0.22s; }
-  .row:nth-child(5).visible { animation-delay: 0.28s; }
+  .row:nth-child(1) { animation-delay: 0.04s; }
+  .row:nth-child(2) { animation-delay: 0.10s; }
+  .row:nth-child(3) { animation-delay: 0.16s; }
+  .row:nth-child(4) { animation-delay: 0.22s; }
+  .row:nth-child(5) { animation-delay: 0.28s; }
 
   @keyframes revealUp {
     0%   { opacity: 0; transform: translateY(14px); }
