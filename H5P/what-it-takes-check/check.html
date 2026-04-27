@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>What It Takes — Hard Check</title>
+<style>
+  :root {
+    --navy: #1B365D;
+    --black: #000000;
+    --white: #ffffff;
+    --light: #f7f9fc;
+    --gold: #D4AF37;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #6b7280;
+    --line: #d9d9d9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #222; line-height: 1.5; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 16px; }
+  .header { background: var(--navy); color: var(--white); padding: 16px 20px; border-radius: 6px 6px 0 0; }
+  .header h1 { font-size: 18px; font-weight: 800; letter-spacing: 0.3px; }
+  .header p { font-size: 13px; opacity: 0.92; margin-top: 4px; }
+  .body { background: #fff; border: 1px solid var(--line); border-top: none; padding: 18px 20px; border-radius: 0 0 6px 6px; }
+
+  .qcount { font-size: 12px; font-weight: 700; color: var(--gray); letter-spacing: 1px; margin-bottom: 6px; }
+  .level { display: inline-block; background: #f4dada; color: #8a1a1a; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; margin-left: 6px; letter-spacing: 0.5px; }
+  .qstem { font-size: 17px; font-weight: 600; line-height: 1.55; margin-bottom: 14px; color: #1a1a1a; }
+  .scenario { background: var(--light); border-left: 4px solid var(--navy); padding: 10px 14px; margin-bottom: 14px; font-size: 14px; line-height: 1.55; color: #444; }
+
+  .opts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .opt {
+    text-align: left;
+    padding: 14px 16px;
+    background: #fff;
+    border: 2px solid var(--navy);
+    color: #222;
+    font-size: 14px;
+    line-height: 1.5;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .opt:hover:not(:disabled) { background: #eef3fb; }
+  .opt .letter { display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 800; text-align: center; line-height: 24px; font-size: 13px; margin-right: 10px; vertical-align: middle; }
+  .opt:disabled { cursor: not-allowed; }
+  .opt.is-right { background: var(--green-bg); border-color: var(--green); color: #1b3d1f; }
+  .opt.is-right .letter { background: var(--green); }
+  .opt.is-wrong { background: var(--red-bg); border-color: var(--red); color: #4a1414; }
+  .opt.is-wrong .letter { background: var(--red); }
+  .opt.dimmed:not(.is-right) { opacity: 0.55; }
+
+  .rationale {
+    display: none;
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .rationale.show { display: block; }
+  .rationale.right { background: var(--green-bg); color: #1b3d1f; border-left: 4px solid var(--green); }
+  .rationale.wrong { background: var(--red-bg); color: #4a1414; border-left: 4px solid var(--red); }
+  .rationale strong { font-weight: 800; }
+  .rationale em { font-style: italic; }
+
+  .nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn { font-family: inherit; font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 6px; border: 0; cursor: pointer; }
+  .btn-secondary { background: var(--navy); color: #fff; }
+  .footer { font-size: 11px; color: #999; text-align: center; padding: 12px 0 4px; letter-spacing: 0.4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>HARD CHECK · What Does It Really Take?</h1>
+    <p>One question. Four answers that all sound right. Only one matches the Bear Team operating philosophy.</p>
+  </div>
+
+  <div class="body">
+
+    <div class="qcount">QUESTION <span class="level">HARD</span></div>
+
+    <div class="scenario">
+      A new agent asks you over coffee: <em>"You've been here a while. What does it actually take to be a top-producing Realtor at Bear Team?"</em><br>
+      Four answers below all sound like things successful agents say. Pick the one that aligns with the brokerage's <strong>stated operating philosophy</strong>.
+    </div>
+
+    <div class="opts" id="opts">
+      <button class="opt" data-correct="false" data-rationale="A_WRONG">
+        <span class="letter">A</span>
+        "Lead generation volume. The agents at the top of the leaderboard are the ones grinding 80 hours a week — cold-calling FSBOs, door-knocking, working open houses every weekend. Effort beats everything else."
+      </button>
+      <button class="opt" data-correct="false" data-rationale="B_WRONG">
+        <span class="letter">B</span>
+        "Relationships. Real estate is a people business. The agents who win build deep referral networks — past clients, sphere, community involvement. The database is everything."
+      </button>
+      <button class="opt" data-correct="true" data-rationale="C_RIGHT">
+        <span class="letter">C</span>
+        "Disciplined system use. Top performers here don't wing it. They follow defined structure through every stage — BearTeamOS™ hygiene, documented files, early escalation. Personality and hustle just amplify whatever the system is already producing."
+      </button>
+      <button class="opt" data-correct="false" data-rationale="D_WRONG">
+        <span class="letter">D</span>
+        "Market knowledge. The agents who close are the ones who can talk comps, neighborhoods, financing terms, and inspection findings cold. You can't fake competence — clients smell it."
+      </button>
+    </div>
+
+    <div class="rationale" id="rationale"></div>
+
+    <div class="nav" id="nav" style="display:none;">
+      <button class="btn btn-secondary" id="btn-retry">Try Again</button>
+    </div>
+
+  </div>
+
+  <div class="footer">Bear Academy · Hard Check · Section 1 — Brokerage Vision &amp; Structure</div>
+</div>
+
+<script>
+(function(){
+  const RATIONALES = {
+    A_WRONG: 'Hustle without structure is exactly the <em>"improvisation"</em> the brokerage rejects. The page is explicit: <strong>"Bear Team does not operate on improvisation. The brokerage runs through defined structure and disciplined execution."</strong> A grinder who skips CRM hygiene loses leads in their own pipeline. Effort matters — but effort poured into a leaky system produces inconsistent income, which is the opposite of what the page calls <em>"predictability stabilizes income."</em>',
+    B_WRONG: 'Relationships matter — but the page never identifies relationships as the differentiator. Without disciplined system use, a forgotten follow-up loses the referral, a missed escalation kills the trust, and a sloppy file destroys the reputation that built the relationship in the first place. The brokerage standard is unambiguous: <strong>"BearTeamOS™ is not optional."</strong> Database alone is just contacts; database <em>plus</em> system is leverage.',
+    C_RIGHT: 'Correct. This is the page\'s explicit thesis: <strong>"Top-performing agents do not wing it — they follow systems that guide movement through every stage of a transaction."</strong> The chain it teaches: <em>structure reduces friction → friction reduction increases conversion → conversion increases predictability → predictability stabilizes income.</em> Independent contractor status doesn\'t exempt anyone: <em>"You control your production. The brokerage maintains the structure that protects it."</em> Personality, market knowledge, and hustle layer ON TOP of the system — they don\'t replace it.',
+    D_WRONG: 'Market knowledge is necessary, not sufficient. The page never identifies expertise as the differentiator — it identifies <em>disciplined execution</em>. An agent who can recite comps cold but has dirty CRM data, missed escalations, and a chaotic transaction file will still lose deals to compliance issues and dropped follow-ups. The brokerage frames it directly: <strong>"Documentation protects income. Escalation protects reputation."</strong>'
+  };
+
+  const optsBox = document.getElementById('opts');
+  const rationale = document.getElementById('rationale');
+  const navEl = document.getElementById('nav');
+  const btnRetry = document.getElementById('btn-retry');
+
+  function reset(){
+    rationale.className = 'rationale';
+    rationale.innerHTML = '';
+    navEl.style.display = 'none';
+    Array.from(optsBox.children).forEach(b => {
+      b.disabled = false;
+      b.classList.remove('is-right','is-wrong','dimmed');
+    });
+  }
+
+  Array.from(optsBox.children).forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.disabled) return;
+      const correct = btn.dataset.correct === 'true';
+      const ratKey = btn.dataset.rationale;
+
+      // Mark all
+      Array.from(optsBox.children).forEach(b => {
+        b.disabled = true;
+        const isC = b.dataset.correct === 'true';
+        if (isC) b.classList.add('is-right');
+        else b.classList.add('dimmed');
+      });
+      if (!correct) btn.classList.add('is-wrong');
+
+      // Show rationale
+      rationale.classList.add('show', correct ? 'right' : 'wrong');
+      const head = correct ? '✓ <strong>Best answer.</strong> ' : '✗ <strong>Not the best.</strong> ';
+      rationale.innerHTML = head + RATIONALES[ratKey] + (correct ? '' : '<br><br><strong>The correct answer is C.</strong> ' + RATIONALES.C_RIGHT.replace(/^Correct\. /,''));
+
+      // Show retry
+      navEl.style.display = '';
+    });
+  });
+
+  btnRetry.addEventListener('click', reset);
+})();
+</script>
+</body>
+</html>
