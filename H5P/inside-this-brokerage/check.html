@@ -218,22 +218,13 @@
 (function(){
   const rows = document.querySelectorAll('[data-row]');
 
-  // Effect 1: scroll-triggered reveal with stagger
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.18, rootMargin: '0px 0px -40px 0px' });
-
-    rows.forEach(r => io.observe(r));
-  } else {
-    // Fallback: just show them
-    rows.forEach(r => r.classList.add('visible'));
-  }
+  // Effect 1: stagger reveal on load (reliable inside iframes; CSS handles the per-row delay)
+  // Use rAF + small delay so the browser has time to paint the initial hidden state first.
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      rows.forEach(r => r.classList.add('visible'));
+    }, 60);
+  });
 
   // Effect 3: click to expand (one open at a time)
   rows.forEach(row => {
