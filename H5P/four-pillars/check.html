@@ -29,8 +29,7 @@
     transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
     overflow: hidden;
   }
-  .js-ready .row { opacity: 0; transform: translateY(14px); }
-  .js-ready .row.visible { animation: revealUp 0.55s cubic-bezier(.2,.7,.25,1) forwards; }
+  .row { animation: revealUp 0.55s cubic-bezier(.2,.7,.25,1) backwards; }
 
   .row:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-left-color: var(--gold); background: #fcfdff; }
   .row:hover .label { color: var(--navy-deep); }
@@ -57,10 +56,10 @@
   .deeper p { font-size: 13.5px; line-height: 1.6; color: #333; }
   .deeper p strong { color: var(--navy); }
 
-  .row:nth-child(1).visible { animation-delay: 0.04s; }
-  .row:nth-child(2).visible { animation-delay: 0.10s; }
-  .row:nth-child(3).visible { animation-delay: 0.16s; }
-  .row:nth-child(4).visible { animation-delay: 0.22s; }
+  .row:nth-child(1) { animation-delay: 0.04s; }
+  .row:nth-child(2) { animation-delay: 0.10s; }
+  .row:nth-child(3) { animation-delay: 0.16s; }
+  .row:nth-child(4) { animation-delay: 0.22s; }
 
   @keyframes revealUp { 0% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: translateY(0); } }
   @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.55; } }
@@ -133,8 +132,6 @@
 <script>
 (function(){
   const rows = document.querySelectorAll('[data-row]');
-  document.body.classList.add('js-ready');
-  requestAnimationFrame(() => { setTimeout(() => { rows.forEach(r => r.classList.add('visible')); }, 80); });
   rows.forEach(row => {
     row.addEventListener('click', () => {
       const wasOpen = row.classList.contains('open');
