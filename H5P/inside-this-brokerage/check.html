@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Inside This Brokerage — Bear Team Standards</title>
+<style>
+  :root {
+    --navy: #1B365D;
+    --navy-deep: #142a4d;
+    --black: #000000;
+    --white: #ffffff;
+    --light: #f7f9fc;
+    --gold: #D4AF37;
+    --gold-soft: #fff8e1;
+    --green: #2e7d32;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #6b7280;
+    --line: #e5eaf0;
+    --shadow-soft: 0 1px 3px rgba(27,54,93,0.06);
+    --shadow-hover: 0 6px 18px rgba(27,54,93,0.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #222; line-height: 1.5; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 16px; }
+
+  .header { background: var(--navy); color: #fff; padding: 16px 20px; border-radius: 6px 6px 0 0; }
+  .header h1 { font-size: 18px; font-weight: 800; letter-spacing: 0.3px; }
+  .header p { font-size: 13px; opacity: 0.92; margin-top: 4px; }
+
+  .body { background: #fff; border: 1px solid var(--line); border-top: none; padding: 18px 20px 22px; border-radius: 0 0 6px 6px; }
+
+  .hint { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--gray); margin-bottom: 14px; letter-spacing: 0.3px; }
+  .hint .dot { display: inline-block; width: 8px; height: 8px; background: var(--gold); border-radius: 50%; animation: pulse 2.4s ease-in-out infinite; }
+
+  .rows { display: flex; flex-direction: column; gap: 10px; }
+
+  .row {
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--navy);
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+    opacity: 0;
+    transform: translateY(14px);
+    overflow: hidden;
+  }
+  .row.visible { animation: revealUp 0.55s cubic-bezier(.2,.7,.25,1) forwards; }
+
+  .row:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    border-left-color: var(--gold);
+    background: #fcfdff;
+  }
+  .row:hover .standard { color: var(--navy-deep); }
+  .row:hover .why { font-weight: 600; color: #2a3a52; }
+  .row:hover .chevron { color: var(--gold); transform: rotate(0deg) scale(1.1); }
+
+  .row.open { border-left-color: var(--gold); background: #fcfdff; box-shadow: var(--shadow-hover); }
+  .row.open .chevron { transform: rotate(180deg); color: var(--gold); }
+
+  .row-head {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 36px;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 18px;
+  }
+  @media (max-width: 560px) {
+    .row-head { grid-template-columns: 1fr 28px; padding: 12px 14px; gap: 8px; }
+    .row-head .why { grid-column: 1 / -1; padding-top: 4px; border-top: 1px dashed var(--line); margin-top: 4px; }
+    .row-head .chevron { grid-column: 2; grid-row: 1; }
+  }
+
+  .standard { font-weight: 800; color: var(--navy); font-size: 15px; letter-spacing: 0.1px; transition: color 0.18s; }
+  .why { color: #444; font-size: 14px; line-height: 1.5; transition: font-weight 0.18s, color 0.18s; }
+  .chevron {
+    width: 28px; height: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--light); border-radius: 50%; color: var(--navy);
+    font-size: 14px; font-weight: 800;
+    transition: transform 0.28s cubic-bezier(.2,.7,.25,1), color 0.18s, background 0.18s;
+    user-select: none;
+  }
+
+  .deeper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.2,.7,.25,1);
+    background: linear-gradient(180deg, #fcfdff 0%, #f7f9fc 100%);
+    border-top: 1px dashed var(--line);
+  }
+  .row.open .deeper { max-height: 320px; }
+
+  .deeper-inner { padding: 14px 18px 16px; }
+  .deeper .lbl {
+    display: inline-block;
+    font-size: 11px; font-weight: 800; letter-spacing: 1px;
+    color: #8a1a1a;
+    background: var(--red-bg);
+    padding: 3px 8px; border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .deeper p { font-size: 13.5px; line-height: 1.6; color: #333; }
+  .deeper p strong { color: var(--navy); }
+
+  /* Stagger reveal delays */
+  .row:nth-child(1).visible { animation-delay: 0.04s; }
+  .row:nth-child(2).visible { animation-delay: 0.10s; }
+  .row:nth-child(3).visible { animation-delay: 0.16s; }
+  .row:nth-child(4).visible { animation-delay: 0.22s; }
+  .row:nth-child(5).visible { animation-delay: 0.28s; }
+
+  @keyframes revealUp {
+    0%   { opacity: 0; transform: translateY(14px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.4); opacity: 0.55; }
+  }
+
+  .footer { font-size: 11px; color: #999; text-align: center; padding: 12px 0 4px; letter-spacing: 0.4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>INSIDE THIS BROKERAGE</h1>
+    <p>Five non-negotiable standards. Click any row to see what happens when an agent skips it.</p>
+  </div>
+
+  <div class="body">
+    <div class="hint"><span class="dot"></span> Hover to highlight · Click to expand</div>
+
+    <div class="rows" id="rows">
+      <div class="row" data-row>
+        <div class="row-head">
+          <div class="standard">BearTeamOS™ is not optional</div>
+          <div class="why">It provides operational visibility across all active transactions.</div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="deeper">
+          <div class="deeper-inner">
+            <span class="lbl">IF YOU SKIP IT</span>
+            <p>The broker can't see your pipeline. Deals fall through cracks unnoticed. Support arrives too late, after the deadline already missed. Agents who shadow-track on their phone or sticky notes are <strong>far more likely to miss a contingency or a follow-up window</strong> &mdash; and the brokerage has no way to step in early.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" data-row>
+        <div class="row-head">
+          <div class="standard">Documentation protects income</div>
+          <div class="why">Clean files prevent disputes and protect commission.</div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="deeper">
+          <div class="deeper-inner">
+            <span class="lbl">IF YOU SKIP IT</span>
+            <p>Commission disputes go to whoever has the cleaner paper trail. A missing addendum, an unsigned disclosure, an undocumented phone agreement &mdash; each one gives the other side leverage. <strong>Clean documentation is what wins disputes that would otherwise become deductions from your check.</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" data-row>
+        <div class="row-head">
+          <div class="standard">Escalation protects reputation</div>
+          <div class="why">Early visibility gives leadership time to intervene before damage.</div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="deeper">
+          <div class="deeper-inner">
+            <span class="lbl">IF YOU SKIP IT</span>
+            <p>Small problems become threats of legal action. The broker can fix most situations with a 30-second call <em>before</em> they escalate &mdash; she can't fix a Google review after it's posted. <strong>Late escalation costs reputation. Early escalation costs nothing.</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" data-row>
+        <div class="row-head">
+          <div class="standard">Defined stages protect execution</div>
+          <div class="why">Every transaction moves through structured milestones.</div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="deeper">
+          <div class="deeper-inner">
+            <span class="lbl">IF YOU SKIP IT</span>
+            <p>Agents skip steps that "feel" optional &mdash; showing prep, follow-up cadences, post-close tasks. Each skipped step compounds. By closing, <strong>three small gaps become one missed referral, one lost client, and one compliance scare</strong>. The structure exists because memory and instinct are not durable enough.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" data-row>
+        <div class="row-head">
+          <div class="standard">Accountability protects everyone</div>
+          <div class="why">Standards apply equally &mdash; no exceptions, no shortcuts.</div>
+          <div class="chevron">▾</div>
+        </div>
+        <div class="deeper">
+          <div class="deeper-inner">
+            <span class="lbl">IF YOU SKIP IT</span>
+            <p>One exception becomes the new standard. The agent who's allowed to skip CRM hygiene becomes the model for the next new hire. <strong>Standards only mean something when they apply equally to every agent on every deal</strong> &mdash; including the top producer, including the founder's friend, including you on a Friday afternoon.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Bear Academy · Interactive Reference · Section 1 — Brokerage Vision &amp; Structure</div>
+</div>
+
+<script>
+(function(){
+  const rows = document.querySelectorAll('[data-row]');
+
+  // Effect 1: scroll-triggered reveal with stagger
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -40px 0px' });
+
+    rows.forEach(r => io.observe(r));
+  } else {
+    // Fallback: just show them
+    rows.forEach(r => r.classList.add('visible'));
+  }
+
+  // Effect 3: click to expand (one open at a time)
+  rows.forEach(row => {
+    row.addEventListener('click', () => {
+      const wasOpen = row.classList.contains('open');
+      rows.forEach(r => r.classList.remove('open'));
+      if (!wasOpen) row.classList.add('open');
+    });
+    // Keyboard support
+    row.tabIndex = 0;
+    row.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); }
+    });
+  });
+})();
+</script>
+</body>
+</html>
