@@ -59,10 +59,7 @@
   .row:hover .why { font-weight: 600; color: #2a3a52; }
   .row:hover .chevron { color: var(--gold); transform: rotate(0deg) scale(1.1); }
 
-  .row.open { border-left-color: var(--gold); background: #fcfdff; box-shadow: var(--shadow-hover); }
-  .row.open .chevron { transform: rotate(180deg); color: var(--gold); }
-
-  .row-head {
+    .row-head {
     display: grid;
     grid-template-columns: 1fr 1.2fr 36px;
     gap: 14px;
@@ -241,5 +238,14 @@
   });
 })();
 </script>
+<div class="modal-bg" id="modal-bg" role="dialog" aria-modal="true">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <div class="ttl" id="modal-title"></div>
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
 </body>
 </html>
