@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Organizing Your Business Files — Best-Answer Check</title>
+<style>
+  :root {
+    --navy: #1B365D;
+    --black: #000000;
+    --white: #ffffff;
+    --light: #f7f9fc;
+    --gold: #D4AF37;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #ffebee;
+    --gray: #6b7280;
+    --line: #d9d9d9;
+    --amber-bg: #fff8e1;
+    --amber: #b06500;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #222; line-height: 1.5; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 16px; }
+  .header { background: var(--navy); color: var(--white); padding: 16px 20px; border-radius: 6px 6px 0 0; }
+  .header h1 { font-size: 18px; font-weight: 800; letter-spacing: 0.3px; }
+  .header p { font-size: 13px; opacity: 0.92; margin-top: 4px; }
+  .body { background: #fff; border: 1px solid var(--line); border-top: none; padding: 18px 20px; border-radius: 0 0 6px 6px; }
+
+  .progress { display: flex; gap: 6px; margin-bottom: 18px; }
+  .pill { flex: 1; height: 6px; background: #e6ebf2; border-radius: 999px; }
+  .pill.active { background: var(--navy); }
+  .pill.correct { background: var(--green); }
+  .pill.wrong { background: var(--red); }
+
+  .qcount { font-size: 12px; font-weight: 700; color: var(--gray); letter-spacing: 1px; margin-bottom: 6px; }
+  .level { display: inline-block; background: #f4eed8; color: #8a6c00; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; margin-left: 6px; letter-spacing: 0.5px; }
+  .qstem { font-size: 16px; font-weight: 600; line-height: 1.55; margin-bottom: 14px; color: #1a1a1a; }
+
+  .opts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .opt {
+    text-align: left;
+    padding: 12px 14px;
+    background: #fff;
+    border: 2px solid var(--navy);
+    color: #222;
+    font-size: 14px;
+    line-height: 1.45;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .opt:hover:not(:disabled) { background: #eef3fb; }
+  .opt .letter { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 800; text-align: center; line-height: 22px; font-size: 12px; margin-right: 8px; vertical-align: middle; }
+  .opt:disabled { cursor: not-allowed; }
+  .opt.picked { background: #eef3fb; border-color: var(--navy); }
+  .opt.is-right { background: var(--green-bg); border-color: var(--green); color: #1b3d1f; }
+  .opt.is-right .letter { background: var(--green); }
+  .opt.is-wrong { background: var(--red-bg); border-color: var(--red); color: #4a1414; }
+  .opt.is-wrong .letter { background: var(--red); }
+
+  .rationale {
+    display: none;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .rationale.show { display: block; }
+  .rationale.right { background: var(--green-bg); color: #1b3d1f; border-left: 4px solid var(--green); }
+  .rationale.wrong { background: var(--red-bg); color: #4a1414; border-left: 4px solid var(--red); }
+  .rationale strong { font-weight: 800; }
+  .rationale em { font-style: italic; color: #555; }
+
+  .nav { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn { font-family: inherit; font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 6px; border: 0; cursor: pointer; }
+  .btn-primary { background: var(--black); color: #fff; }
+  .btn-secondary { background: var(--navy); color: #fff; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .score { margin-left: auto; font-weight: 800; font-size: 14px; color: var(--navy); }
+
+  .results { display: none; padding: 22px 24px; border-radius: 6px; }
+  .results.show { display: block; }
+  .results.tier-100 { background: var(--green-bg); color: #1b3d1f; border-left: 4px solid var(--green); }
+  .results.tier-80  { background: var(--amber-bg); color: var(--amber); border-left: 4px solid var(--gold); }
+  .results.tier-0   { background: var(--red-bg); color: #4a1414; border-left: 4px solid var(--red); }
+  .results h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .results p { font-size: 14px; line-height: 1.55; }
+  .footer { font-size: 11px; color: #999; text-align: center; padding: 12px 0 4px; letter-spacing: 0.4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>BEST-ANSWER CHECK · Organizing Your Business Files</h1>
+    <p>5 hard scenarios. Multiple options will look reasonable — only one is the Bear Team standard.</p>
+  </div>
+
+  <div class="body">
+    <div class="progress" id="progress"></div>
+
+    <div id="quiz">
+      <div class="qcount" id="qcount"></div>
+      <div class="qstem" id="qstem"></div>
+      <div class="opts" id="opts"></div>
+      <div class="rationale" id="rationale"></div>
+      <div class="nav">
+        <button class="btn btn-primary" id="btn-next" disabled>Next →</button>
+        <div class="score" id="score">0 / 5</div>
+      </div>
+    </div>
+
+    <div class="results" id="results"></div>
+  </div>
+
+  <div class="footer">Bear Academy · Best-Answer Check · Section 3</div>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {
+      stem: "You receive a wind mitigation inspection report from the buyer's lender at 4 PM on a Friday. What's the BEST action?",
+      options: [
+        { text: "Upload it to BearTeamOS™ first thing Monday morning — it won't be reviewed until then anyway.", correct: false,
+          why: "The standard is <strong>within 24 hours of receipt</strong>, not 'when convenient.' Friday at 4 PM means by Saturday at 4 PM — weekends count." },
+        { text: "Email it to the transaction coordinator with a note asking her to upload it on your behalf when she's online.", correct: false,
+          why: "File ownership stays with you. Delegating the upload doesn't relieve the 24-hour standard, and TC isn't the system of record — BearTeamOS™ is." },
+        { text: "Forward it to every party on the email chain so everyone has a copy, then upload it on Monday.", correct: false,
+          why: "Mass-forwarding creates spillage risk and confuses the chain of custody. The action that protects you is the upload — not the forward." },
+        { text: "Upload it to the Inspections folder in BearTeamOS™ within 24 hours of receipt — even though it's the weekend.", correct: true,
+          why: "Wind mitigation is named explicitly in the Inspections folder (\"home inspection, termite, wind mitigation, 4-point\"). The page rule: <em>\"Within 24 hours of receipt.\"</em> Weekends and holidays don't reset the clock." }
+      ]
+    },
+    {
+      stem: "You and the cooperating agent agree on a phone call to extend the inspection contingency by 3 days. They text you afterward: \"Confirmed — see you Monday.\" The formal addendum hasn't been drafted or signed yet. Where does this conversation belong in BearTeamOS™ NOW?",
+      options: [
+        { text: "Communication Log — file a brief written note documenting the call and attach the text confirmation.", correct: true,
+          why: "Communication Log is defined as <em>\"key emails, written instructions, escalation notes — ongoing throughout transaction.\"</em> A phone agreement plus a text confirmation is exactly that. The formal addendum will go in Purchase Contract once it exists." },
+        { text: "Purchase Contract — a phone agreement modifies the contract, so it should be logged there.", correct: false,
+          why: "Phone agreements aren't contract documents. Purchase Contract holds <em>executed</em> documents — addenda, counteroffers, the contract itself. Until the addendum is signed, it doesn't live there." },
+        { text: "Inspections — the conversation was about inspection timing.", correct: false,
+          why: "Inspections holds <em>inspection reports</em> (home, termite, wind mitigation, 4-point). The folder is defined by document type, not by topic." },
+        { text: "Nowhere yet — wait until the formal addendum is signed and upload the addendum to Purchase Contract.", correct: false,
+          why: "This is the most common trap. The page's rule is explicit: <em>\"If a document is generated, received, or signed during a transaction, it goes into BearTeamOS™ immediately — not tomorrow, not next week.\"</em> The text confirmation is a generated artifact." }
+      ]
+    },
+    {
+      stem: "You sign a listing agreement with a seller at 7:00 PM on Tuesday. The seller wants the listing live in MLS by Thursday morning. When MUST the signed listing agreement be uploaded to BearTeamOS™?",
+      options: [
+        { text: "Before the listing goes live in MLS — the contract has to exist in the system before the listing exists publicly.", correct: false,
+          why: "Sounds responsible, and most brokerages do prefer this — but it's not the documented Bear Team standard. The standard is a fixed clock from signing, regardless of MLS timing." },
+        { text: "Within 24 hours of signing — by 7:00 PM Wednesday.", correct: true,
+          why: "The page's table is unambiguous for Listing Agreement: <em>\"Within 24 hours of signing.\"</em> The clock starts when ink hits paper, not when MLS goes live." },
+        { text: "Same day as MLS goes live — Thursday morning.", correct: false,
+          why: "That's 36+ hours after signing. The 24-hour standard has already expired." },
+        { text: "Within 48 hours — you signed in the evening, so the practical clock starts the next business day.", correct: false,
+          why: "The standard doesn't grant evening grace. 24 hours from signing means 24 hours from signing." }
+      ]
+    },
+    {
+      stem: "A teammate built her own folder system in BearTeamOS™: sub-folders by buyer name, plus a \"Misc\" catch-all for anything she's unsure about. She offers to share her structure with you because it works well for her. What's the BEST response?",
+      options: [
+        { text: "Adopt her system — consistency between teammates matters more than the brokerage default, and her approach is clearly working.", correct: false,
+          why: "The page is explicit: <em>\"You do not invent your own system. You follow the brokerage standard so that the broker, transaction coordinator, and compliance team can locate any document instantly.\"</em> Her system breaks that visibility." },
+        { text: "Tell her she should be using the Bear Team standard, and then escalate to the broker that she's using a non-standard system.", correct: false,
+          why: "Escalation isn't your first move when you observe a peer's process. Use the standard yourself, mention it casually if she asks. Compliance issues with documentation can be flagged to the broker, but the question asked YOUR best response — and that's to follow the standard." },
+        { text: "Politely decline and use the brokerage standard — the consistent structure is what allows broker, TC, and compliance to find documents instantly.", correct: true,
+          why: "Aligns with the explicit page rule and the underlying purpose: shared system = instant retrieval by anyone on the team. Personal systems break that." },
+        { text: "Use a hybrid — keep the standard top-level categories but add her by-buyer sub-folders for your own organization.", correct: false,
+          why: "Hybrid sounds reasonable but it still injects a non-standard layer. The broker, TC, and compliance team don't know your sub-folder convention. Stay standard." }
+      ]
+    },
+    {
+      stem: "On the same day, you receive: (a) the title commitment from the seller's attorney for the listing you represent, and (b) an inspection response addendum signed by both parties on a separate transaction where you represent the buyer. How should each be filed in BearTeamOS™?",
+      options: [
+        { text: "Title commitment → Title & Closing folder. Inspection response → Inspections folder.", correct: false,
+          why: "Title commitment placement is right, but the inspection RESPONSE is a signed addendum — it modifies the contract. Inspections folder is for the underlying inspection <em>reports</em> (home, termite, wind mitigation, 4-point), not response documents." },
+        { text: "Title commitment → Title & Closing folder. Inspection response → Purchase Contract folder.", correct: true,
+          why: "Purchase Contract is defined as <em>\"Executed contract, addenda, counteroffers.\"</em> A signed inspection response addendum is, by name, an addendum. Title commitment comes from the title company, so it lives in Title &amp; Closing." },
+        { text: "Both into Purchase Contract — they're both contract-relevant.", correct: false,
+          why: "Title commitment isn't contract-relevant in the same way; it's title-company-issued and goes in Title &amp; Closing per the page table." },
+        { text: "Title commitment → Title & Closing. Inspection response → Communication Log because it documents an agreement reached between parties.", correct: false,
+          why: "An executed addendum is a contract modification, not a communication artifact. Communication Log holds emails, written instructions, escalation notes — not signed legal documents." }
+      ]
+    }
+  ];
+
+  let qi = 0;
+  let correctCount = 0;
+  let answered = false;
+
+  const stem = document.getElementById('qstem');
+  const qcount = document.getElementById('qcount');
+  const optsBox = document.getElementById('opts');
+  const progress = document.getElementById('progress');
+  const rationale = document.getElementById('rationale');
+  const btnNext = document.getElementById('btn-next');
+  const scoreEl = document.getElementById('score');
+  const resultsEl = document.getElementById('results');
+  const quizEl = document.getElementById('quiz');
+
+  // Build progress pills
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const p = document.createElement('div');
+    p.className = 'pill' + (i === 0 ? ' active' : '');
+    progress.appendChild(p);
+  }
+
+  function renderQuestion() {
+    answered = false;
+    const q = QUESTIONS[qi];
+    qcount.innerHTML = 'QUESTION ' + (qi + 1) + ' OF ' + QUESTIONS.length + ' <span class="level">HARD</span>';
+    stem.textContent = q.stem;
+    optsBox.innerHTML = '';
+    rationale.className = 'rationale';
+    rationale.innerHTML = '';
+    const letters = ['A','B','C','D'];
+    q.options.forEach((opt, idx) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.dataset.idx = idx;
+      b.innerHTML = '<span class="letter">' + letters[idx] + '</span>' + opt.text;
+      b.addEventListener('click', () => pick(idx, b));
+      optsBox.appendChild(b);
+    });
+    btnNext.disabled = true;
+    btnNext.textContent = (qi === QUESTIONS.length - 1) ? 'See My Score' : 'Next →';
+    scoreEl.textContent = correctCount + ' / ' + QUESTIONS.length;
+    Array.from(progress.children).forEach((p, i) => {
+      if (i === qi) p.classList.add('active');
+    });
+  }
+
+  function pick(idx, btnEl) {
+    if (answered) return;
+    answered = true;
+    const q = QUESTIONS[qi];
+    const opt = q.options[idx];
+    const correct = opt.correct;
+    if (correct) correctCount++;
+
+    const allBtns = optsBox.querySelectorAll('.opt');
+    allBtns.forEach((b, i) => {
+      b.disabled = true;
+      if (q.options[i].correct) b.classList.add('is-right');
+    });
+    if (!correct) btnEl.classList.add('is-wrong');
+    btnEl.classList.add('picked');
+
+    rationale.classList.add('show', correct ? 'right' : 'wrong');
+    const head = correct ? '✓ <strong>Best answer.</strong> ' : '✗ <strong>Not the best.</strong> ';
+    rationale.innerHTML = head + opt.why;
+
+    progress.children[qi].classList.remove('active');
+    progress.children[qi].classList.add(correct ? 'correct' : 'wrong');
+
+    scoreEl.textContent = correctCount + ' / ' + QUESTIONS.length;
+    btnNext.disabled = false;
+  }
+
+  btnNext.addEventListener('click', () => {
+    if (qi < QUESTIONS.length - 1) {
+      qi++;
+      renderQuestion();
+    } else {
+      showResults();
+    }
+  });
+
+  function showResults() {
+    quizEl.style.display = 'none';
+    resultsEl.classList.remove('tier-0','tier-80','tier-100');
+    let tier, msg;
+    const total = QUESTIONS.length;
+    if (correctCount === total) {
+      tier = 'tier-100';
+      msg = '<h2>' + correctCount + ' / ' + total + ' — Locked in.</h2><p>You can read the Bear Team file standard cold and apply it under pressure. Move on.</p>';
+    } else if (correctCount >= 4) {
+      tier = 'tier-80';
+      msg = '<h2>' + correctCount + ' / ' + total + ' — Strong.</h2><p>You have the structure. The one(s) you missed are the same edge cases that cost agents commission. Re-read the page and retake — get to ' + total + '/' + total + '.</p>';
+    } else {
+      tier = 'tier-0';
+      msg = '<h2>' + correctCount + ' / ' + total + ' — Re-read the page.</h2><p>The Bear Team file standard isn\'t common sense — it\'s a documented system. Common-sense answers will fail this check. Re-read <em>Organizing Your Business Files</em> and retake.</p>';
+    }
+    resultsEl.classList.add(tier, 'show');
+    resultsEl.innerHTML = msg + '<div style="margin-top:14px;"><button class="btn btn-secondary" id="btn-retry">Try Again</button></div>';
+    document.getElementById('btn-retry').addEventListener('click', () => {
+      qi = 0; correctCount = 0;
+      Array.from(progress.children).forEach(p => p.className = 'pill');
+      progress.children[0].classList.add('active');
+      resultsEl.classList.remove('show','tier-0','tier-80','tier-100');
+      quizEl.style.display = '';
+      renderQuestion();
+    });
+  }
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>
