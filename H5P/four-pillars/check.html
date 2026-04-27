@@ -36,10 +36,7 @@
   .row:hover .value { font-weight: 600; color: #2a3a52; }
   .row:hover .chevron { color: var(--gold); transform: scale(1.1); }
 
-  .row.open { border-left-color: var(--gold); background: #fcfdff; box-shadow: var(--shadow-hover); }
-  .row.open .chevron { transform: rotate(180deg); color: var(--gold); }
-
-  .row-head { display: grid; grid-template-columns: 1fr 1.2fr 36px; gap: 14px; align-items: center; padding: 14px 18px; }
+    .row-head { display: grid; grid-template-columns: 1fr 1.2fr 36px; gap: 14px; align-items: center; padding: 14px 18px; }
   @media (max-width: 560px) {
     .row-head { grid-template-columns: 1fr 28px; padding: 12px 14px; gap: 8px; }
     .row-head .value { grid-column: 1 / -1; padding-top: 4px; border-top: 1px dashed var(--line); margin-top: 4px; }
@@ -49,8 +46,22 @@
   .value { color: #444; font-size: 14px; line-height: 1.5; transition: font-weight 0.18s, color 0.18s; }
   .chevron { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; background: var(--light); border-radius: 50%; color: var(--navy); font-size: 14px; font-weight: 800; transition: transform 0.28s cubic-bezier(.2,.7,.25,1), color 0.18s; user-select: none; }
 
-  .deeper { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(.2,.7,.25,1); background: linear-gradient(180deg, #fcfdff 0%, #f7f9fc 100%); border-top: 1px dashed var(--line); }
-  .row.open .deeper { max-height: 360px; }
+  /* Modal overlay (replaces inline expand) */
+  .modal-bg { position: fixed; inset: 0; background: rgba(20,30,55,0.55); display: none; z-index: 50; align-items: center; justify-content: center; padding: 16px; animation: fadeIn 0.18s ease-out; }
+  .modal-bg.show { display: flex; }
+  .modal { background: #fff; border-radius: 8px; max-width: 560px; width: 100%; max-height: calc(100vh - 32px); overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.35); animation: popIn 0.22s cubic-bezier(.2,.7,.25,1); }
+  .modal-head { background: var(--navy); color: #fff; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; border-radius: 8px 8px 0 0; gap: 12px; }
+  .modal-head .ttl { font-weight: 800; font-size: 15px; letter-spacing: 0.2px; line-height: 1.3; }
+  .modal-close { background: rgba(255,255,255,0.15); color: #fff; border: 0; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; font-weight: 800; cursor: pointer; transition: background 0.15s; flex-shrink: 0; }
+  .modal-close:hover { background: rgba(255,255,255,0.3); }
+  .modal-body { padding: 16px 20px 18px; }
+  .modal-body .lbl { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #8a1a1a; background: var(--red-bg); padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; }
+  .modal-body p { font-size: 14px; line-height: 1.6; color: #333; }
+  .modal-body p strong { color: var(--navy); }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+  /* Hide inline .deeper containers (we read their content via JS) */
+  .deeper { display: none; }
   .deeper-inner { padding: 14px 18px 16px; }
   .deeper .lbl { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #8a1a1a; background: var(--red-bg); padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
   .deeper p { font-size: 13.5px; line-height: 1.6; color: #333; }
@@ -143,5 +154,14 @@
   });
 })();
 </script>
+<div class="modal-bg" id="modal-bg" role="dialog" aria-modal="true">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <div class="ttl" id="modal-title"></div>
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
 </body>
 </html>
