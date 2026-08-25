@@ -19,7 +19,7 @@ You are NOT allowed to deviate from structure, styling, or instructional format.
 - DO NOT use `<style>` tags
 - DO NOT use external CSS or JavaScript
 - Output must render correctly inside Moodle TinyMCE editor
-- Must be mobile-responsive using simple HTML structure
+- Must be mobile-responsive using simple HTML structure — every page MUST fit a 360 px phone with zero horizontal scrolling (see MOBILE STANDARD below)
 
 ---
 
@@ -28,7 +28,7 @@ You are NOT allowed to deviate from structure, styling, or instructional format.
 Every page MUST begin with:
 
 ```html
-<div style="max-width: 900px; margin: auto; padding: 0 16px; font-family: Arial, Helvetica, sans-serif; line-height: 1.6; color: #222;">
+<div style="max-width: 900px; margin: auto; padding: 0 clamp(8px, 3vw, 16px); font-family: Arial, Helvetica, sans-serif; line-height: 1.6; color: #222;">
 ```
 
 ---
@@ -48,12 +48,13 @@ Every page MUST begin with:
 3. **MAIN CONTENT CONTAINER**
    - White background
    - Border: `#d9d9d9`
-   - Padding: `24px`
+   - Padding: `clamp(12px, 4vw, 24px)`
+   - `overflow-wrap: anywhere`
 
 4. **CONTENT PANELS** (USE MULTIPLE)
    - Background: `#f8fafc`
    - Left border: `4px solid #1B365D`
-   - Padding: `14px 18px`
+   - Padding: `14px clamp(10px, 3vw, 18px)`
 
 5. **OPTIONAL STRUCTURED PANEL** (IF NEEDED)
    - Background: `#f4f7fb`
@@ -88,7 +89,7 @@ Every page MUST begin with:
 **One row. Two buttons. No exceptions.**
 
 ```html
-<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin:28px 0 8px;">
+<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin:28px 0 8px;">
   <a style="background:#1B365D; color:#ffffff; padding:12px 22px; text-decoration:none; font-weight:bold; border-radius:4px;" href="{PREV_URL}">← PREVIOUS</a>
   <a style="background:#000000; color:#ffffff; padding:12px 22px; text-decoration:none; font-weight:bold; border-radius:4px; margin-left:auto;" href="{NEXT_URL}">NEXT →</a>
 </div>
@@ -97,7 +98,7 @@ Every page MUST begin with:
 **Button rules:**
 - PREVIOUS: solid navy `#1B365D` background, white text — always. Never outlined. Never white background.
 - NEXT: solid black `#000000` background, white text — always.
-- Use `justify-content: space-between` + `margin-left: auto` on NEXT. Do NOT use `flex-wrap: wrap`.
+- Use `justify-content: space-between` + `margin-left: auto` on NEXT, and `flex-wrap: wrap` so the buttons stack on phones.
 
 **First page of a course or section:** Omit PREVIOUS entirely. Right-align NEXT alone using `justify-content: flex-end`.
 
@@ -114,7 +115,6 @@ Every page MUST begin with:
 **Forbidden:**
 - ❌ Outlined or ghost-style PREVIOUS button
 - ❌ White background on PREVIOUS
-- ❌ `flex-wrap: wrap` on the nav row
 - ❌ Two right-side buttons (custom label + generic NEXT)
 - ❌ `«` or `»` arrows — use `←` and `→`
 
@@ -125,6 +125,30 @@ Every page MUST begin with:
 - Header background: `#1B365D`, white text
 - Alternating row colors: `#f7f9fc` / `#ffffff`
 - Border color: `#d9d9d9`
+- **NEVER more than 3 columns.** Merge a 4th column into another cell (step numbers become "1. " at the start of the next cell; short references become a second line).
+- Every table MUST use exactly this wrapper and style:
+
+```html
+<div style="max-width: 100%; overflow-x: auto;">
+<table style="width: 100%; border-collapse: collapse; font-size: clamp(12px, 3.6vw, 14px); overflow-wrap: anywhere;">
+  <tr style="background: #1B365D; color: #ffffff;"><th style="padding: clamp(5px, 1.6vw, 8px); text-align: left; border: 1px solid #d9d9d9;">…</th></tr>
+  <tr style="background: #f7f9fc;"><td style="padding: clamp(5px, 1.6vw, 8px); border: 1px solid #d9d9d9; vertical-align: top;">…</td></tr>
+</table>
+</div>
+```
+
+- No pixel widths on cells. No `white-space: nowrap`. No `min-width`.
+
+---
+
+### MOBILE STANDARD (MANDATORY — every page must fit a 360 px phone)
+
+- All horizontal padding on the header, lesson strip, main container, panels and footer uses `clamp(min, 4vw, max)` — desktop keeps the max, phones get the min. Wrapper: `padding: 0 clamp(8px, 3vw, 16px)`.
+- The main content container carries `overflow-wrap: anywhere`.
+- Images: `max-width: 100%; height: auto; display: block;` — never a pixel width.
+- Video: 16:9 responsive wrapper only.
+- Navigation row: keep `flex-wrap: wrap` so the two buttons stack on narrow screens.
+- FORBIDDEN anywhere on the page: fixed pixel widths ≥ 300px, `white-space: nowrap`, `min-width`, tables with 4+ columns.
 
 ---
 
@@ -162,7 +186,6 @@ Every page MUST:
 
 - `data-start="..."` / `data-end="..."` attributes — remove all
 - Duplicate h2 title below the navy banner — remove
-- `flex-wrap: wrap` on nav row — remove; add `margin-left: auto` to NEXT
 - Old `max-width: 1000px` wrapper — replace with `900px`
 - Legacy `← BACK` / `TAKE QUIZ →` button pairs — replace with two-button nav row
 
@@ -171,10 +194,11 @@ Every page MUST:
 ### VALIDATION BEFORE OUTPUT
 
 Before generating, internally confirm:
-- Wrapper is `max-width: 900px` with `padding: 0 16px`
+- Wrapper is `max-width: 900px` with `padding: 0 clamp(8px, 3vw, 16px)`
 - Structure order is correct (header → lesson strip → content → footer → nav)
 - PREVIOUS is solid navy. NEXT is solid black. No outlined buttons.
-- No `flex-wrap: wrap` on nav row
+- Every table has ≤ 3 columns and the mobile wrapper/clamp() styles
+- Padding uses clamp(); no fixed pixel widths, no nowrap
 - Closing panel states a specific agent action
 - Page is usable immediately in Moodle
 

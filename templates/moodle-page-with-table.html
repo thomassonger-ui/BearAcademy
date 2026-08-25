@@ -1,59 +1,62 @@
 <div style="max-width: 1000px; margin: auto; font-family: Arial, Helvetica, sans-serif; line-height: 1.6; color: #222;">
 
   <!-- 1. HEADER BAR -->
-  <div style="background: #1B365D; color: #ffffff; padding: 20px 24px;">
+  <div style="background: #1B365D; color: #ffffff; padding: clamp(14px, 4vw, 20px) clamp(12px, 4vw, 24px);">
     <div style="font-size: 22px; font-weight: bold;">Bear Team Academy</div>
     <div style="font-size: 14px; opacity: 0.9;">[COURSE NAME] &middot; [SECTION NAME]</div>
   </div>
 
   <!-- 2. LESSON STRIP -->
-  <div style="background: #f4f4f4; padding: 12px 24px; border-bottom: 1px solid #d9d9d9;">
+  <div style="background: #f4f4f4; padding: 12px clamp(12px, 4vw, 24px); border-bottom: 1px solid #d9d9d9;">
     <span style="font-weight: bold;">Lesson:</span> [LESSON TITLE]
     <span style="float: right; color: #555;">Page [PAGE NUMBER]</span>
   </div>
 
   <!-- 3. MAIN CONTENT CONTAINER -->
-  <div style="background: #ffffff; border: 1px solid #d9d9d9; padding: 24px;">
+  <div style="background: #ffffff; border: 1px solid #d9d9d9; overflow-wrap: anywhere; padding: clamp(12px, 4vw, 24px);">
 
     <!-- 4. CONTENT PANEL -->
-    <div style="background: #f7f9fc; border-left: 4px solid #1B365D; padding: 16px; margin-bottom: 16px;">
+    <div style="background: #f7f9fc; border-left: 4px solid #1B365D; padding: clamp(10px, 3vw, 16px); margin-bottom: 16px;">
       <div style="font-weight: bold; font-size: 16px; margin-bottom: 8px;">Context</div>
       <div>[Operational context — where this fits in the agent's workflow.]</div>
     </div>
 
-    <!-- 5. STRUCTURED PANEL (table) -->
-    <div style="background: #f4f7fb; border: 1px solid #d9d9d9; padding: 16px; margin-bottom: 16px;">
+    <!-- 5. STRUCTURED PANEL (table) — never more than 3 columns (see reference/build-standard.md → Table Standard) -->
+    <div style="background: #f4f7fb; border: 1px solid #d9d9d9; padding: clamp(10px, 3vw, 16px); margin-bottom: 16px;">
       <div style="font-weight: bold; font-size: 16px; margin-bottom: 12px;">[TABLE TITLE]</div>
-      <table style="width: 100%; border-collapse: collapse; border: 1px solid #d9d9d9;">
+      <!-- MOBILE STANDARD: max 3 columns, wrapped in an overflow-x container, clamp() font + cell padding -->
+      <div style="max-width: 100%; overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; border: 1px solid #d9d9d9; font-size: clamp(12px, 3.6vw, 14px); overflow-wrap: anywhere;">
         <thead>
           <tr>
-            <th style="background: #1B365D; color: #ffffff; text-align: left; padding: 10px; border: 1px solid #d9d9d9;">Column A</th>
-            <th style="background: #1B365D; color: #ffffff; text-align: left; padding: 10px; border: 1px solid #d9d9d9;">Column B</th>
-            <th style="background: #1B365D; color: #ffffff; text-align: left; padding: 10px; border: 1px solid #d9d9d9;">Column C</th>
+            <th style="background: #1B365D; color: #ffffff; text-align: left; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">Column A</th>
+            <th style="background: #1B365D; color: #ffffff; text-align: left; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">Column B</th>
+            <th style="background: #1B365D; color: #ffffff; text-align: left; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">Column C</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="background: #f7f9fc; padding: 10px; border: 1px solid #d9d9d9;">[Row 1A]</td>
-            <td style="background: #f7f9fc; padding: 10px; border: 1px solid #d9d9d9;">[Row 1B]</td>
-            <td style="background: #f7f9fc; padding: 10px; border: 1px solid #d9d9d9;">[Row 1C]</td>
+            <td style="background: #f7f9fc; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 1A]</td>
+            <td style="background: #f7f9fc; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 1B]</td>
+            <td style="background: #f7f9fc; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 1C]</td>
           </tr>
           <tr>
-            <td style="background: #ffffff; padding: 10px; border: 1px solid #d9d9d9;">[Row 2A]</td>
-            <td style="background: #ffffff; padding: 10px; border: 1px solid #d9d9d9;">[Row 2B]</td>
-            <td style="background: #ffffff; padding: 10px; border: 1px solid #d9d9d9;">[Row 2C]</td>
+            <td style="background: #ffffff; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 2A]</td>
+            <td style="background: #ffffff; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 2B]</td>
+            <td style="background: #ffffff; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 2C]</td>
           </tr>
           <tr>
-            <td style="background: #f7f9fc; padding: 10px; border: 1px solid #d9d9d9;">[Row 3A]</td>
-            <td style="background: #f7f9fc; padding: 10px; border: 1px solid #d9d9d9;">[Row 3B]</td>
-            <td style="background: #f7f9fc; padding: 10px; border: 1px solid #d9d9d9;">[Row 3C]</td>
+            <td style="background: #f7f9fc; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 3A]</td>
+            <td style="background: #f7f9fc; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 3B]</td>
+            <td style="background: #f7f9fc; padding: clamp(5px, 1.6vw, 10px); border: 1px solid #d9d9d9;">[Row 3C]</td>
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <!-- 7. CLOSING PANEL -->
-    <div style="background: #f7f9fc; border-left: 4px solid #1B365D; padding: 16px; margin-top: 24px;">
+    <div style="background: #f7f9fc; border-left: 4px solid #1B365D; padding: clamp(10px, 3vw, 16px); margin-top: 24px;">
       <div style="font-weight: bold; font-size: 16px; margin-bottom: 8px;">What You Do Next</div>
       <div>[Specific action the agent takes when they leave this page.]</div>
     </div>
@@ -61,7 +64,7 @@
   </div>
 
   <!-- 8. FOOTER -->
-  <div style="text-align: center; padding: 16px 24px; font-size: 12px; color: #666;">
+  <div style="text-align: center; padding: 16px clamp(12px, 4vw, 24px); font-size: 12px; color: #666;">
     <div>Bear Academy Training System</div>
     <div>Powered by Moodle LMS</div>
     <div>Last updated: [YYYY-MM-DD]</div>

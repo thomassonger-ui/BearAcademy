@@ -9,7 +9,7 @@ This is the canonical build standard for every page published to Bear Team Acade
 - **Inline CSS only.** No `<style>` tags.
 - **No external CSS or JavaScript.**
 - Must render correctly inside the **Moodle TinyMCE editor**.
-- Must be **mobile-responsive** using simple HTML structure only.
+- Must be **mobile-responsive** using simple HTML structure only — see **Mobile Standard** below. Every page must fit a 360 px phone screen with zero horizontal scrolling. No exceptions.
 
 ---
 
@@ -40,12 +40,13 @@ And close with `</div>` at the very end of the page.
 3. **Main Content Container**
    - White background
    - Border: `#d9d9d9`
-   - Padding: `24px`
+   - Padding: `clamp(12px, 4vw, 24px)` (24 px on desktop, 12 px on phones)
+   - `overflow-wrap: anywhere` so filenames and URLs can never push the page wide
 
 4. **Content Panels** (use multiple)
    - Background: `#f7f9fc`
    - Left border: `4px solid #1B365D`
-   - Padding: `16px`
+   - Padding: `clamp(10px, 3vw, 16px)` (16 px on desktop, 10 px on phones)
 
 5. **Structured Panel** *(optional — for tables or structured breakdowns)*
    - Background: `#f4f7fb`
@@ -173,6 +174,43 @@ If a table is used:
 - Header text: white
 - Alternating row colors: `#f7f9fc` / `#ffffff`
 - Border color: `#d9d9d9`
+- **Maximum 3 columns.** A 4th column must be merged into another (e.g. a step number becomes "1. " at the start of the next cell; a short reference becomes a second line in the first cell).
+- Every table is wrapped and styled exactly like this:
+
+```html
+<div style="max-width: 100%; overflow-x: auto;">
+  <table style="width: 100%; border-collapse: collapse; font-size: clamp(12px, 3.6vw, 14px); overflow-wrap: anywhere;">
+    <tr style="background: #1B365D; color: #ffffff;">
+      <th style="padding: clamp(5px, 1.6vw, 8px); text-align: left; border: 1px solid #d9d9d9;">Column</th>
+    </tr>
+    <tr style="background: #f7f9fc;">
+      <td style="padding: clamp(5px, 1.6vw, 8px); border: 1px solid #d9d9d9; vertical-align: top;">Cell</td>
+    </tr>
+  </table>
+</div>
+```
+
+- Never set a pixel `width` on a cell, never use `white-space: nowrap`, never set `min-width`.
+
+---
+
+## Mobile Standard (enforced August 2026)
+
+**Every page must fit inside a phone screen — 360 px Android and 375/390 px iPhone — with no horizontal scrolling. No exceptions.**
+
+Why this exists: an August 2026 audit found 53 of 129 pages in Courses 1–5 (and every table page in Course 6) spilling off the right edge of a phone. Every failure was a 3–5 column table inside 24 px + 16 px of side padding, which leaves only ~280 px of content width on a 360 px screen.
+
+Rules (all inline CSS — no `<style>`, no media queries needed):
+
+1. **Side padding scales with the screen** using `clamp(min, vw, max)`. Desktop keeps the max value; phones get the min. Header `padding: clamp(14px, 4vw, 20px) clamp(12px, 4vw, 24px)`; lesson strip and footer `padding: 12px clamp(12px, 4vw, 24px)` / `16px clamp(12px, 4vw, 24px)`; main container `clamp(12px, 4vw, 24px)`; panels `clamp(10px, 3vw, 16px)`.
+2. **Tables** follow the Table Standard above: max 3 columns, `clamp()` font and cell padding, `overflow-wrap: anywhere`, wrapped in a `max-width: 100%; overflow-x: auto` div.
+3. **Main content container** carries `overflow-wrap: anywhere` so long filenames, URLs and email addresses break instead of forcing width.
+4. **Images**: `max-width: 100%; height: auto; display: block;` — never a pixel width.
+5. **Videos**: the 16:9 responsive wrapper (`position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;` with an absolutely positioned 100%×100% iframe).
+6. **Navigation row** keeps `flex-wrap: wrap` so PREVIOUS / NEXT stack on narrow screens.
+7. **Never** use fixed pixel widths ≥ 300 px, `white-space: nowrap`, `min-width`, floats wider than 50%, or multi-column CSS grids without `auto-fit`/`minmax`.
+
+Verification (required before publishing): open the page in a 360 px wide frame or Chrome DevTools device mode. No element may extend past the right edge, and no table may need its own horizontal scroll. Claude can run this check across a whole course in about 10 minutes — see `reference/moodle-audit-2026-08-25.md` for the method.
 
 ---
 
@@ -190,6 +228,6 @@ If a table is used:
 - [ ] First page of a course/section omits PREVIOUS (does not show a grayed pill)
 - [ ] Arrow characters are `←` and `→` (not `«` / `»`)
 - [ ] Page renders correctly in TinyMCE preview
-- [ ] Page renders correctly on mobile width (< 480px)
+- [ ] Page fits a 360 px phone with zero horizontal scrolling (Mobile Standard) — tables ≤ 3 columns, `clamp()` padding, `overflow-wrap: anywhere`
 
 If anything is missing → fix it before publishing.
